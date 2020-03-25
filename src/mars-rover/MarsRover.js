@@ -42,7 +42,7 @@ export class MarsRover {
    * allowed orientations.
    */
   setOrientation (orientation) {
-    if (!this.validOrientations.includes(orientation)) {
+    if (!Object.values(this.validOrientations).includes(orientation)) {
       throw new Error(`The given orientation is not valid`)
     }
 
@@ -53,24 +53,14 @@ export class MarsRover {
    * Turns this rover left at a right angle
    */
   turnLeft () {
-    const currentIndex = this.validOrientations.indexOf(this.orientation)
-
-    if (currentIndex - 1 < 0) {
-      this.orientation =
-        this.validOrientations[this.validOrientations.length - 1]
-    } else {
-      this.orientation = this.validOrientations[currentIndex - 1]
-    }
+    this.orientation = this.orientation.left
   }
 
   /**
    * Turns this rover right at a right angle
    */
   turnRight () {
-    const currentIndex = this.validOrientations.indexOf(this.orientation)
-    const newIndex = (currentIndex + 1) % this.validOrientations.length
-
-    this.orientation = this.validOrientations[newIndex]
+    this.orientation = this.orientation.right
   }
 
   /**

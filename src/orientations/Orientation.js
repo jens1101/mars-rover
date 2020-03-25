@@ -14,8 +14,6 @@
  * point in the current orientation.
  */
 
-// TODO: I wonder if this class should have a "left" and "right" property.
-//  Then getting what is left or right of an orientation will be easier.
 /**
  * A primitive class to handle cardinal directions
  */
@@ -30,5 +28,45 @@ export class Orientation {
   constructor (symbol, moveFunction) {
     this.symbol = symbol
     this.move = moveFunction
+  }
+
+  /**
+   * Gets what orientation is immediately left of this one.
+   * @return {Orientation}
+   */
+  get left () {
+    return this._left
+  }
+
+  /**
+   * Sets the orientation immediately left of this one.
+   * @param {Orientation} orientation
+   */
+  set left (orientation) {
+    this._left = orientation
+
+    // Set the right side of the current left side. This ensures that the 2-way
+    // referencing is correct.
+    orientation.right = this
+  }
+
+  /**
+   * Gets what orientation is immediately right of this one.
+   * @return {Orientation}
+   */
+  get right () {
+    return this._right
+  }
+
+  /**
+   * Sets the orientation immediately right of this one.
+   * @param {Orientation} orientation
+   */
+  set right (orientation) {
+    this._right = orientation
+
+    // Set the left side of the current right side. This ensures that the 2-way
+    // referencing is correct.
+    orientation.left = this
   }
 }
