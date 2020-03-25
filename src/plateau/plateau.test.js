@@ -1,4 +1,4 @@
-import assert from 'assert'
+import { strict as assert } from 'assert'
 import { Plateau } from './Plateau.js'
 
 it('Can create a new plateau', () => {
@@ -15,17 +15,17 @@ it('Creating a too small plateau causes an error', () => {
 it('`isInPlateau` works correctly', () => {
   const plateau = new Plateau(5, 5)
 
-  assert.strictEqual(plateau.isInPlateau(3, 3), true)
-  assert.strictEqual(plateau.isInPlateau(0, 0), true)
-  assert.strictEqual(plateau.isInPlateau(5, 0), true)
-  assert.strictEqual(plateau.isInPlateau(0, 5), true)
-  assert.strictEqual(plateau.isInPlateau(5, 5), true)
+  assert.equal(plateau.isInPlateau(3, 3), true)
+  assert.equal(plateau.isInPlateau(0, 0), true)
+  assert.equal(plateau.isInPlateau(5, 0), true)
+  assert.equal(plateau.isInPlateau(0, 5), true)
+  assert.equal(plateau.isInPlateau(5, 5), true)
 
-  assert.strictEqual(plateau.isInPlateau(-1, 0), false)
-  assert.strictEqual(plateau.isInPlateau(0, -1), false)
-  assert.strictEqual(plateau.isInPlateau(-1, -1), false)
-  assert.strictEqual(plateau.isInPlateau(0, 6), false)
-  assert.strictEqual(plateau.isInPlateau(6, 0), false)
-  assert.strictEqual(plateau.isInPlateau(6, 6), false)
-  assert.strictEqual(plateau.isInPlateau(-1, 6), false)
+  assert.equal(plateau.isInPlateau(-1, 0), false)
+  assert.equal(plateau.isInPlateau(0, -1), false)
+  assert.equal(plateau.isInPlateau(-1, -1), false)
+  assert.equal(plateau.isInPlateau(0, 6), false)
+  assert.equal(plateau.isInPlateau(6, 0), false)
+  assert.equal(plateau.isInPlateau(6, 6), false)
+  assert.equal(plateau.isInPlateau(-1, 6), false)
 })
