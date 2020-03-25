@@ -11,7 +11,12 @@ export class Plateau {
     this.minX = 0
     this.minY = 0
 
-    if (maxX <= this.minX) throw new Error()
+    if (maxX <= this.minX) {
+      throw new Error(`'maxX' must be larger than ${this.minX}`)
+    }
+    if (maxY <= this.minY) {
+      throw new Error(`'maxY' must be larger than ${this.minY}`)
+    }
 
     this.maxX = maxX
     this.maxY = maxY
@@ -24,6 +29,7 @@ export class Plateau {
    * @returns {boolean}
    */
   isInPlateau (x, y) {
-    return x >= 0 && x <= this.maxX && y >= 0 && y <= this.maxY
+    return x >= this.minX && x <= this.maxX &&
+      y >= this.minY && y <= this.maxY
   }
 }

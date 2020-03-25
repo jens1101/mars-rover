@@ -8,11 +8,14 @@
   "author": "jens1101",
   "license": "MIT",
   "devDependencies": {
-    "@types/jest": "^25.1.4",
-    "jest": "^25.1.0"
+    "@types/mocha": "^7.0.2",
+    "mocha": "^7.1.1"
   },
   "type": "module",
   "engines": {
     "node": ">=13.2.0"
+  },
+  "mocha": {
+    "spec": "src/**/*test.js"
   }
 }
