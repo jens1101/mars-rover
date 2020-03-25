@@ -8,6 +8,11 @@ export class Plateau {
    * @param {number} maxY The maximum Y value for the plateau
    */
   constructor (maxX, maxY) {
+    this.minX = 0
+    this.minY = 0
+
+    if (maxX <= this.minX) throw new Error()
+
     this.maxX = maxX
     this.maxY = maxY
   }

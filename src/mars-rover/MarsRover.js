@@ -1,4 +1,4 @@
-import { orientations } from './orientations.js'
+import { orientations } from '../orientations/orientations.js'
 
 /**
  * A mars rover that roams around a plateau
