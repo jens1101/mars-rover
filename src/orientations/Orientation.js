@@ -34,7 +34,7 @@ export class Orientation {
    * Gets what orientation is immediately left of this one.
    * @return {Orientation}
    */
-  get left () {
+  getLeft () {
     return this._left
   }
 
@@ -42,19 +42,26 @@ export class Orientation {
    * Sets the orientation immediately left of this one.
    * @param {Orientation} orientation
    */
-  set left (orientation) {
+  setLeft (orientation) {
+    // If the current orientation left of this one is equal to the given one
+    // then do nothing. This avoids a stack overflow.
+    if (this._left === orientation) {
+      return
+    }
+
     this._left = orientation
 
     // Set the right side of the current left side. This ensures that the 2-way
-    // referencing is correct.
-    orientation.right = this
+    // referencing is correct. This could cause a stack overflow, that is why
+    // the above condition is in place
+    orientation.setRight(this)
   }
 
   /**
    * Gets what orientation is immediately right of this one.
    * @return {Orientation}
    */
-  get right () {
+  getRight () {
     return this._right
   }
 
@@ -62,11 +69,18 @@ export class Orientation {
    * Sets the orientation immediately right of this one.
    * @param {Orientation} orientation
    */
-  set right (orientation) {
+  setRight (orientation) {
+    // If the current orientation right of this one is equal to the given one
+    // then do nothing. This avoids a stack overflow.
+    if (this._right === orientation) {
+      return
+    }
+
     this._right = orientation
 
     // Set the left side of the current right side. This ensures that the 2-way
-    // referencing is correct.
-    orientation.left = this
+    // referencing is correct. This could cause a stack overflow, that is why
+    // the above condition is in place
+    orientation.setLeft(this)
   }
 }

@@ -51,20 +51,30 @@ export class MarsRover {
 
   /**
    * Turns this rover left at a right angle
+   * @return {MarsRover} Returns the current mars rover instance for method
+   * chaining
    */
   turnLeft () {
-    this.orientation = this.orientation.left
+    this.orientation = this.orientation.getLeft()
+
+    return this
   }
 
   /**
    * Turns this rover right at a right angle
+   * @return {MarsRover} Returns the current mars rover instance for method
+   * chaining
    */
   turnRight () {
-    this.orientation = this.orientation.right
+    this.orientation = this.orientation.getRight()
+
+    return this
   }
 
   /**
    * Moves this rover forward one grid point
+   * @return {MarsRover} Returns the current mars rover instance for method
+   * chaining
    * @throws {Error} When the new coordinates are outside the boundaries of the
    * plateau.
    */
@@ -72,5 +82,7 @@ export class MarsRover {
     const { x: newX, y: newY } = this.orientation.move(this.x, this.y)
 
     this.setPosition(newX, newY)
+
+    return this
   }
 }

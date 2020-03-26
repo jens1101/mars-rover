@@ -24,10 +24,10 @@ const west = new Orientation('W', (x, y) => ({ x: x - 1, y: y }))
 // right sides, because that setter will automatically set the left side of the
 // assigned orientation. We could have also only assigned left sides; the end
 // effect would have been the same.
-north.right = east
-east.right = south
-south.right = west
-west.right = north
+north.setRight(east)
+east.setRight(south)
+south.setRight(west)
+west.setRight(north)
 
 /**
  * All the orientations that are valid for this project. This only includes
