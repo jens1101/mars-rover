@@ -1,3 +1,5 @@
+/* global it */
+
 import { strict as assert } from 'assert'
 import { Plateau } from './Plateau.js'
 

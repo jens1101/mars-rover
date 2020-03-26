@@ -1,3 +1,5 @@
+/* global it */
+
 import { strict as assert } from 'assert'
 import { Orientation } from './Orientation.js'
 import { orientations } from './orientations.js'

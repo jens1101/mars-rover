@@ -43,7 +43,7 @@ export class MarsRover {
    */
   setOrientation (orientation) {
     if (!Object.values(this.validOrientations).includes(orientation)) {
-      throw new Error(`The given orientation is not valid`)
+      throw new Error('The given orientation is not valid')
     }
 
     this.orientation = orientation
