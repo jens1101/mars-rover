@@ -9,17 +9,22 @@ const MS_DELAY_BETWEEN_ROVER_MOVEMENTS = 400
  * @param {HTMLButtonElement} runButton
  * @param {HTMLTextAreaElement} commandTextArea
  * @param {HTMLCanvasElement} canvas
+ * @param {HTMLElement} errorAlert
  */
-export function bootstrap (runButton, commandTextArea, canvas) {
+export function bootstrap (runButton, commandTextArea, canvas, errorAlert) {
   runButton.addEventListener('click', async () => {
     // Disable the run button and command text area while the commands are
     // running.
     runButton.disabled = true
     commandTextArea.disabled = true
+    errorAlert.setAttribute('hidden', 'hidden')
 
     try {
       // TODO: catch errors and display them
-      await runCommands(commandTextArea.value)
+      await runCommands(commandTextArea.value, canvas)
+    } catch (error) {
+      errorAlert.textContent = error.message
+      errorAlert.removeAttribute('hidden')
     } finally {
       // Always re-enable the buttons
       runButton.disabled = false
@@ -28,10 +33,15 @@ export function bootstrap (runButton, commandTextArea, canvas) {
   })
 }
 
-async function runCommands (commands) {
+/**
+ * @param {string} commands
+ * @param {HTMLCanvasElement} canvas
+ * @return {Promise<void>}
+ */
+async function runCommands (commands, canvas) {
   const { plateau, allRoversMovements } = parseCommands(commands)
 
-  initGridDisplay(plateau.maxX, plateau.minY)
+  initGridDisplay(canvas, plateau.maxX, plateau.maxY)
 
   for (const roverMovements of allRoversMovements) {
     let previousPosition = null
@@ -45,8 +55,16 @@ async function runCommands (commands) {
   }
 }
 
-function initGridDisplay (width, height) {
+/**
+ *
+ * @param {HTMLCanvasElement} canvas
+ * @param {number} width
+ * @param {number} height
+ */
+function initGridDisplay (canvas, width, height) {
   // TODO: implement
+  // TODO: remove the console log
+  console.log(`Created plateau ${width} wide and ${height} high`)
 }
 
 async function * iterateOverRoverMovements (roverMovements, delay) {

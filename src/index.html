@@ -3,10 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <title>Mars Rover Challenge</title>
-    <!-- TODO: add bootstrap -->
+    <script type="module">
+      import { bootstrap } from './app/main.js'
+
+      const runButton = document.getElementById('run-button')
+      const commandTextArea = document.getElementById('command-text-area')
+      const canvas = document.getElementById('plateau-canvas')
+      const errorAlert = document.getElementById('error-alert')
+
+      bootstrap(runButton, commandTextArea, canvas, errorAlert)
+    </script>
 </head>
 <body>
-<!-- TODO: add a text area here for input of commands -->
+<section>
+    <label>
+        Commands
+        <textarea id="command-text-area"></textarea>
+    </label>
+    <button id="run-button" type="button">Run</button>
+</section>
 <!-- TODO: add a canvas here to render what is happening -->
+<section>
+    <div hidden id="error-alert"></div>
+    <canvas id="plateau-canvas"></canvas>
+</section>
 </body>
 </html>
