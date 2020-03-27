@@ -31,7 +31,7 @@ const roverPossibleMovementInstructions = new Map([
  * for generating the rover movements.
  */
 export function parseCommands (commands) {
-  const commandLines = commands.split('\n')
+  const commandLines = commands.split('\n').map(line => line.trim())
 
   // Throw an error if an invalid number of commands has been given.
   if ((commandLines.length - 1) % 2 !== 0) {
@@ -99,7 +99,7 @@ function parseRoverCommands (plateau, initCommand, movementCommand) {
   const initInstructions = initCommand.split(' ')
 
   // Get the starting X and Y coordinates
-  const { startX, startY } = initInstructions.splice(0, 2)
+  const [startX, startY] = initInstructions.splice(0, 2)
     .map(character => parseInt(character))
   if (isNaN(startX)) throw new Error('The specified start X value is invalid')
   if (isNaN(startY)) throw new Error('The specified start Y value is invalid')
