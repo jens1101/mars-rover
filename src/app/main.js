@@ -4,6 +4,9 @@ import { parseCommands } from './command-parser.js'
 
 const MS_DELAY_BETWEEN_ROVER_MOVEMENTS = 400
 
+// TODO: maybe use an SVG instead of a canvas. This isn't as full of shit and
+//  scales much better.
+
 /**
  *
  * @param {HTMLButtonElement} runButton
