@@ -1,6 +1,7 @@
 // TODO: add rendering to the canvas
 
 import { parseCommands } from './command-parser.js'
+import { SceneSvgRenderer } from './SceneSvgRenderer.js'
 
 const MS_DELAY_BETWEEN_ROVER_MOVEMENTS = 400
 
@@ -11,8 +12,9 @@ const MS_DELAY_BETWEEN_ROVER_MOVEMENTS = 400
  *
  * @param {HTMLFormElement} commandForm
  * @param {HTMLElement} errorAlert
+ * @param {SVGElement} scene
  */
-export function init (commandForm, errorAlert) {
+export function init (commandForm, errorAlert, scene) {
   // noinspection JSUnresolvedVariable
   const runButton = commandForm.run
   // noinspection JSUnresolvedVariable
@@ -28,7 +30,7 @@ export function init (commandForm, errorAlert) {
     errorAlert.setAttribute('hidden', 'hidden')
 
     try {
-      await runCommands(commandTextArea.value)
+      await runCommands(commandTextArea.value, scene)
     } catch (error) {
       errorAlert.textContent = error.message
       errorAlert.removeAttribute('hidden')
@@ -42,33 +44,28 @@ export function init (commandForm, errorAlert) {
 
 /**
  * @param {string} commands
+ * @param {SVGElement} scene
  * @return {Promise<void>}
  */
-async function runCommands (commands) {
+async function runCommands (commands, scene) {
+  // Clear the contents of the SVG
+  while (scene.firstChild) {
+    scene.firstChild.remove()
+  }
+
   const { plateau, allRoversMovements } = parseCommands(commands)
 
-  initGridDisplay(plateau.maxX, plateau.maxY)
+  const sceneSvgRenderer = new SceneSvgRenderer(scene, plateau)
+  sceneSvgRenderer.drawPlateau()
 
   for (const roverMovements of allRoversMovements) {
-    let previousPosition = null
     const asyncRoverMovements = iterateOverRoverMovements(roverMovements,
       MS_DELAY_BETWEEN_ROVER_MOVEMENTS)
 
     for await (const rover of asyncRoverMovements) {
-      drawRoverMovement(previousPosition, rover)
-      previousPosition = { x: rover.x, y: rover.y }
+      sceneSvgRenderer.drawRoverMovement(rover)
     }
   }
-}
-
-/**
- * @param {number} width
- * @param {number} height
- */
-function initGridDisplay (width, height) {
-  // TODO: implement
-  // TODO: remove the console log
-  console.log(`Created plateau ${width} wide and ${height} high`)
 }
 
 async function * iterateOverRoverMovements (roverMovements, delay) {
@@ -77,10 +74,4 @@ async function * iterateOverRoverMovements (roverMovements, delay) {
       setTimeout(() => resolve(rover), delay)
     })
   }
-}
-
-function drawRoverMovement (previousPosition, rover) {
-  // TODO: implement
-  // TODO: remove the console log
-  console.log(`x: ${rover.x} y: ${rover.y} orientation: ${rover.orientation.symbol}`)
 }

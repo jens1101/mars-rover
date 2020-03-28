@@ -10,20 +10,22 @@
     <script type="module">
       import { init } from './app/main.js'
 
-      /**
-       * @type {HTMLFormElement}
-       */
+      /** @type {HTMLFormElement} */
       const commandForm = document.querySelector('#command-form')
-      /**
-       * @type {HTMLElement}
-       */
+      /** @type {HTMLElement} */
       const errorAlert = document.querySelector('#error-alert')
+      /** @type {SVGElement} */
+      const scene = document.querySelector('#scene')
 
-      init(commandForm, errorAlert)
+      init(commandForm, errorAlert, scene)
     </script>
+
+    <style>
+
+    </style>
 </head>
 <body>
-<div class="container">
+<div class="container d-flex flex-column vh-100">
     <h1>Mars Rover Challenge</h1>
     <section>
         <div class="alert alert-danger" hidden id="error-alert"></div>
@@ -43,8 +45,7 @@
     </section>
 
     <!-- TODO: add a canvas here to render what is happening -->
-    <section>
-    </section>
+    <svg id="scene"></svg>
 </div>
 </body>
 </html>
