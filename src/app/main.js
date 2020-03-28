@@ -1,9 +1,10 @@
 // TODO: add rendering to the canvas
 
 import { parseCommands } from './command-parser.js'
-import { SceneSvgRenderer } from './SceneSvgRenderer.js'
-
-const MS_DELAY_BETWEEN_ROVER_MOVEMENTS = 400
+import {
+  MS_DELAY_BETWEEN_ROVER_MOVEMENTS,
+  SceneSvgRenderer
+} from './SceneSvgRenderer.js'
 
 // TODO: maybe use an SVG instead of a canvas. This isn't as full of shit and
 //  scales much better.
