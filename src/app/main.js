@@ -20,6 +20,7 @@ export function init (commandForm, errorAlert, scene) {
   const runButton = commandForm.run
   // noinspection JSUnresolvedVariable
   const commandTextArea = commandForm.commands
+  const renderer = new SceneSvgRenderer(scene)
 
   commandForm.addEventListener('submit', async event => {
     event.preventDefault()
@@ -31,7 +32,7 @@ export function init (commandForm, errorAlert, scene) {
     errorAlert.setAttribute('hidden', 'hidden')
 
     try {
-      await runCommands(commandTextArea.value, scene)
+      await runCommands(commandTextArea.value, renderer)
     } catch (error) {
       errorAlert.textContent = error.message
       errorAlert.removeAttribute('hidden')
@@ -45,26 +46,21 @@ export function init (commandForm, errorAlert, scene) {
 
 /**
  * @param {string} commands
- * @param {SVGElement} scene
+ * @param {SceneSvgRenderer} renderer
  * @return {Promise<void>}
  */
-async function runCommands (commands, scene) {
-  // Clear the contents of the SVG
-  while (scene.firstChild) {
-    scene.firstChild.remove()
-  }
-
+async function runCommands (commands, renderer) {
   const { plateau, allRoversMovements } = parseCommands(commands)
 
-  const sceneSvgRenderer = new SceneSvgRenderer(scene, plateau)
-  sceneSvgRenderer.drawPlateau()
+  renderer.setPlateau(plateau)
+  renderer.drawPlateau()
 
   for (const roverMovements of allRoversMovements) {
     const asyncRoverMovements = iterateOverRoverMovements(roverMovements,
       MS_DELAY_BETWEEN_ROVER_MOVEMENTS)
 
     for await (const rover of asyncRoverMovements) {
-      sceneSvgRenderer.drawRoverMovement(rover)
+      renderer.drawRoverMovement(rover)
     }
   }
 }

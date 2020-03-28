@@ -18,20 +18,41 @@ export class SceneSvgRenderer {
   /**
    *
    * @param {SVGElement} svgElement
-   * @param {Plateau} plateau
    */
-  constructor (svgElement, plateau) {
+  constructor (svgElement) {
     /** @type {SVGElement} */
     this._svgElement = svgElement
     this._svgElement.setAttribute('xmlns', SVG_NAME_SPACE)
 
-    /** @type {Plateau} */
-    this._plateau = plateau
+    this._gridLines = document.createElementNS(SVG_NAME_SPACE, 'g')
+    this._gridLines.setAttribute('fill', 'transparent')
+    this._gridLines.setAttribute('stroke', 'lightgrey')
+    this._gridLines.setAttribute('stroke-width', `${GRID_LINE_THICKNESS}`)
+    this._gridLines.setAttribute('stroke-linecap', 'square')
+    this._svgElement.appendChild(this._gridLines)
+
+    this._roverPaths = document.createElementNS(SVG_NAME_SPACE, 'g')
+    this._roverPaths.setAttribute('fill', 'transparent')
+    this._roverPaths.setAttribute('stroke', 'black')
+    this._roverPaths.setAttribute('stroke-width', `${GRID_LINE_THICKNESS}`)
+    this._roverPaths.setAttribute('stroke-linecap', 'round')
+    this._svgElement.appendChild(this._roverPaths)
+
+    this._roverArrows = document.createElementNS(SVG_NAME_SPACE, 'g')
+    this._roverArrows.setAttribute('fill', 'orange')
+    this._roverArrows.setAttribute('stroke', 'black')
+    this._roverArrows.setAttribute('stroke-width', `${GRID_LINE_THICKNESS}`)
+    this._svgElement.appendChild(this._roverArrows)
 
     /**
      * @type {Map<MarsRover, {path: SVGPathElement, arrow: SVGPathElement}>}
      */
     this._roversData = new Map()
+  }
+
+  setPlateau (plateau) {
+    /** @type {Plateau} */
+    this._plateau = plateau
   }
 
   drawPlateau () {
@@ -40,6 +61,8 @@ export class SceneSvgRenderer {
     const maxX = this._plateau.maxX
     const maxY = this._plateau.maxY
 
+    this.clear()
+
     // Set the new view box. We add a bit extra on the sides so that the
     // grid lines around the edges can render properly
     const viewBoxPadding = ROVER_ARROW_RADIUS + GRID_LINE_THICKNESS / 2
@@ -47,26 +70,29 @@ export class SceneSvgRenderer {
       `${minX - viewBoxPadding} ${minY - viewBoxPadding} 
       ${maxX + viewBoxPadding * 2} ${maxY + viewBoxPadding * 2}`)
 
-    const gridLines = document.createElementNS(SVG_NAME_SPACE, 'g')
-    gridLines.setAttribute('fill', 'transparent')
-    gridLines.setAttribute('stroke', 'lightgrey')
-    gridLines.setAttribute('stroke-width', `${GRID_LINE_THICKNESS}`)
-    gridLines.setAttribute('stroke-linecap', 'square')
-
     // Add grid lines
     for (let x = minX; x <= maxX; x++) {
       const gridLine = document.createElementNS(SVG_NAME_SPACE, 'path')
       gridLine.setAttribute('d', `M ${x} ${minY} V ${maxY}`)
-      gridLines.appendChild(gridLine)
+      this._gridLines.appendChild(gridLine)
     }
     for (let y = minY; y <= maxY; y++) {
       const gridLine = document.createElementNS(SVG_NAME_SPACE, 'path')
       gridLine.setAttribute('d', `M ${minX} ${y} H ${maxX}`)
-      gridLines.appendChild(gridLine)
+      this._gridLines.appendChild(gridLine)
     }
+  }
 
-    // Append the grid lines to the SVG
-    this._svgElement.appendChild(gridLines)
+  clear () {
+    while (this._gridLines.firstChild) {
+      this._gridLines.firstChild.remove()
+    }
+    while (this._roverPaths.firstChild) {
+      this._roverPaths.firstChild.remove()
+    }
+    while (this._roverArrows.firstChild) {
+      this._roverArrows.firstChild.remove()
+    }
   }
 
   /**
@@ -75,26 +101,18 @@ export class SceneSvgRenderer {
    */
   drawRoverMovement (rover) {
     const x = rover.x
-    const y = rover.plateau.maxY - rover.y
+    const y = this._plateau.maxY - rover.y
 
     if (!this._roversData.has(rover)) {
-      // TODO: we can use SVG groups to make this shorter
       const path = document.createElementNS(SVG_NAME_SPACE, 'path')
       path.setAttribute('d', `M ${x} ${y}`)
-      path.setAttribute('fill', 'transparent')
-      path.setAttribute('stroke', 'black')
-      path.setAttribute('stroke-width', `${GRID_LINE_THICKNESS}`)
-      path.setAttribute('stroke-linecap', 'round')
+      this._roverPaths.appendChild(path)
 
       const arrow = document.createElementNS(SVG_NAME_SPACE, 'path')
       arrow.setAttribute('d', ROVER_ARROW_PATH)
-      arrow.setAttribute('fill', 'orange')
-      arrow.setAttribute('stroke', 'black')
-      arrow.setAttribute('stroke-width', `${GRID_LINE_THICKNESS}`)
+      this._roverArrows.appendChild(arrow)
 
       this._roversData.set(rover, { path, arrow })
-      this._svgElement.appendChild(path)
-      this._svgElement.appendChild(arrow)
     }
 
     const { path, arrow } = this._roversData.get(rover)
