@@ -3,30 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>Mars Rover Challenge</title>
+
+    <link href="../node_modules/bootstrap/dist/css/bootstrap.min.css"
+          rel="stylesheet"/>
+
     <script type="module">
-      import { bootstrap } from './app/main.js'
+      import { init } from './app/main.js'
 
-      const runButton = document.getElementById('run-button')
-      const commandTextArea = document.getElementById('command-text-area')
-      const canvas = document.getElementById('plateau-canvas')
-      const errorAlert = document.getElementById('error-alert')
+      /**
+       * @type {HTMLFormElement}
+       */
+      const commandForm = document.querySelector('#command-form')
+      /**
+       * @type {HTMLElement}
+       */
+      const errorAlert = document.querySelector('#error-alert')
 
-      bootstrap(runButton, commandTextArea, canvas, errorAlert)
+      init(commandForm, errorAlert)
     </script>
 </head>
 <body>
-<section>
-    <!-- TODO: maybe add the ability to control the speed via a slider -->
-    <label>
-        Commands
-        <textarea id="command-text-area"></textarea>
-    </label>
-    <button id="run-button" type="button">Run</button>
-</section>
-<!-- TODO: add a canvas here to render what is happening -->
-<section>
-    <div hidden id="error-alert"></div>
-    <canvas id="plateau-canvas"></canvas>
-</section>
+<div class="container">
+    <h1>Mars Rover Challenge</h1>
+    <section>
+        <div class="alert alert-danger" hidden id="error-alert"></div>
+
+        <!-- TODO: maybe add the ability to control the speed via a slider -->
+        <form id="command-form">
+            <div class="form-group">
+                <label for="command-text-area">Commands</label>
+                <textarea class="form-control"
+                          id="command-text-area"
+                          name="commands"></textarea>
+            </div>
+            <button class="btn btn-primary" name="run" type="submit">
+                Run
+            </button>
+        </form>
+    </section>
+
+    <!-- TODO: add a canvas here to render what is happening -->
+    <section>
+    </section>
+</div>
 </body>
 </html>

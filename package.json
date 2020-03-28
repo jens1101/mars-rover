@@ -18,5 +18,8 @@
   },
   "mocha": {
     "spec": "src/**/*test.js"
+  },
+  "dependencies": {
+    "bootstrap": "^4.4.1"
   }
 }

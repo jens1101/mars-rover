@@ -9,13 +9,18 @@ const MS_DELAY_BETWEEN_ROVER_MOVEMENTS = 400
 
 /**
  *
- * @param {HTMLButtonElement} runButton
- * @param {HTMLTextAreaElement} commandTextArea
- * @param {HTMLCanvasElement} canvas
+ * @param {HTMLFormElement} commandForm
  * @param {HTMLElement} errorAlert
  */
-export function bootstrap (runButton, commandTextArea, canvas, errorAlert) {
-  runButton.addEventListener('click', async () => {
+export function init (commandForm, errorAlert) {
+  // noinspection JSUnresolvedVariable
+  const runButton = commandForm.run
+  // noinspection JSUnresolvedVariable
+  const commandTextArea = commandForm.commands
+
+  commandForm.addEventListener('submit', async event => {
+    event.preventDefault()
+
     // Disable the run button and command text area while the commands are
     // running.
     runButton.disabled = true
@@ -23,8 +28,7 @@ export function bootstrap (runButton, commandTextArea, canvas, errorAlert) {
     errorAlert.setAttribute('hidden', 'hidden')
 
     try {
-      // TODO: catch errors and display them
-      await runCommands(commandTextArea.value, canvas)
+      await runCommands(commandTextArea.value)
     } catch (error) {
       errorAlert.textContent = error.message
       errorAlert.removeAttribute('hidden')
@@ -38,13 +42,12 @@ export function bootstrap (runButton, commandTextArea, canvas, errorAlert) {
 
 /**
  * @param {string} commands
- * @param {HTMLCanvasElement} canvas
  * @return {Promise<void>}
  */
-async function runCommands (commands, canvas) {
+async function runCommands (commands) {
   const { plateau, allRoversMovements } = parseCommands(commands)
 
-  initGridDisplay(canvas, plateau.maxX, plateau.maxY)
+  initGridDisplay(plateau.maxX, plateau.maxY)
 
   for (const roverMovements of allRoversMovements) {
     let previousPosition = null
@@ -59,12 +62,10 @@ async function runCommands (commands, canvas) {
 }
 
 /**
- *
- * @param {HTMLCanvasElement} canvas
  * @param {number} width
  * @param {number} height
  */
-function initGridDisplay (canvas, width, height) {
+function initGridDisplay (width, height) {
   // TODO: implement
   // TODO: remove the console log
   console.log(`Created plateau ${width} wide and ${height} high`)
