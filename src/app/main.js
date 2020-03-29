@@ -1,13 +1,8 @@
-// TODO: add rendering to the canvas
-
 import { parseCommands } from './command-parser.js'
 import {
   MS_DELAY_BETWEEN_ROVER_MOVEMENTS,
   SceneSvgRenderer
 } from './SceneSvgRenderer.js'
-
-// TODO: maybe use an SVG instead of a canvas. This isn't as full of shit and
-//  scales much better.
 
 /**
  *
@@ -52,8 +47,7 @@ export function init (commandForm, errorAlert, scene) {
 async function runCommands (commands, renderer) {
   const { plateau, allRoversMovements } = parseCommands(commands)
 
-  renderer.setPlateau(plateau)
-  renderer.drawPlateau()
+  renderer.drawPlateau(plateau)
 
   for (const roverMovements of allRoversMovements) {
     const asyncRoverMovements = iterateOverRoverMovements(roverMovements,
