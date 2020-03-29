@@ -5,14 +5,22 @@ export const MS_DELAY_BETWEEN_ROVER_MOVEMENTS = 400
 const SVG_NAME_SPACE = 'http://www.w3.org/2000/svg'
 const GRID_LINE_THICKNESS = 0.05
 const ROVER_ARROW_RADIUS = 0.2
-const ROVER_ARROW_PATH = `M 0 ${ROVER_ARROW_RADIUS}
-  L ${-ROVER_ARROW_RADIUS * Math.sin(2 * Math.PI / 3)}
+const ROVER_ARROW_PATH =
+  `M ${-ROVER_ARROW_RADIUS * Math.sin(2 * Math.PI / 3)}
   ${ROVER_ARROW_RADIUS * Math.cos(2 * Math.PI / 3)}
+  L 0 ${ROVER_ARROW_RADIUS}
   L ${-ROVER_ARROW_RADIUS * Math.sin(4 * Math.PI / 3)}
-  ${ROVER_ARROW_RADIUS * Math.cos(4 * Math.PI / 3)} Z`
+  ${ROVER_ARROW_RADIUS * Math.cos(4 * Math.PI / 3)}`
 
-// TODO: use CSS instead of attributes
-// TODO: use transitions for animations
+// TODO: document this
+
+/**
+ * @typedef SceneSvgRenderer~RoverData
+ * @property {SVGPathElement} path
+ * @property {SVGGElement} arrow
+ * @property {Orientation|null} previousOrientation
+ * @property {number|null} arrowRotation
+ */
 
 export class SceneSvgRenderer {
   /**
@@ -24,28 +32,48 @@ export class SceneSvgRenderer {
     this._svgElement = svgElement
     this._svgElement.setAttribute('xmlns', SVG_NAME_SPACE)
 
+    const styleElement = document.createElementNS(SVG_NAME_SPACE, 'style')
+    styleElement.appendChild(document.createTextNode(`
+      .grid-lines {
+        fill: transparent;
+        stroke: lightgrey;
+        stroke-width: ${GRID_LINE_THICKNESS};
+        stroke-linecap: square;
+      }
+      
+      .rover-path {
+        fill: transparent;
+        stroke: black;
+        stroke-width: ${GRID_LINE_THICKNESS};
+      }
+      
+      .rover-arrows {
+        fill: orange;
+        stroke: black;
+        stroke-width: ${GRID_LINE_THICKNESS};
+        stroke-linecap: square;
+      }
+      
+      .rover-arrow {
+        transition: transform ${MS_DELAY_BETWEEN_ROVER_MOVEMENTS / 1000}s;
+      }
+    `))
+    this._svgElement.appendChild(styleElement)
+
     this._gridLines = document.createElementNS(SVG_NAME_SPACE, 'g')
-    this._gridLines.setAttribute('fill', 'transparent')
-    this._gridLines.setAttribute('stroke', 'lightgrey')
-    this._gridLines.setAttribute('stroke-width', `${GRID_LINE_THICKNESS}`)
-    this._gridLines.setAttribute('stroke-linecap', 'square')
+    this._gridLines.classList.add('grid-lines')
     this._svgElement.appendChild(this._gridLines)
 
     this._roverPaths = document.createElementNS(SVG_NAME_SPACE, 'g')
-    this._roverPaths.setAttribute('fill', 'transparent')
-    this._roverPaths.setAttribute('stroke', 'black')
-    this._roverPaths.setAttribute('stroke-width', `${GRID_LINE_THICKNESS}`)
-    this._roverPaths.setAttribute('stroke-linecap', 'round')
+    this._roverPaths.classList.add('rover-path')
     this._svgElement.appendChild(this._roverPaths)
 
     this._roverArrows = document.createElementNS(SVG_NAME_SPACE, 'g')
-    this._roverArrows.setAttribute('fill', 'orange')
-    this._roverArrows.setAttribute('stroke', 'black')
-    this._roverArrows.setAttribute('stroke-width', `${GRID_LINE_THICKNESS}`)
+    this._roverArrows.classList.add('rover-arrows')
     this._svgElement.appendChild(this._roverArrows)
 
     /**
-     * @type {Map<MarsRover, {path: SVGPathElement, arrow: SVGPathElement}>}
+     * @type {Map<MarsRover, SceneSvgRenderer~RoverData>}
      */
     this._roversData = new Map()
   }
@@ -108,32 +136,50 @@ export class SceneSvgRenderer {
       path.setAttribute('d', `M ${x} ${y}`)
       this._roverPaths.appendChild(path)
 
-      const arrow = document.createElementNS(SVG_NAME_SPACE, 'path')
-      arrow.setAttribute('d', ROVER_ARROW_PATH)
+      const arrow = document.createElementNS(SVG_NAME_SPACE, 'g')
+      const arrowPath = document.createElementNS(SVG_NAME_SPACE, 'path')
+      arrowPath.classList.add('rover-arrow')
+      arrowPath.setAttribute('d', ROVER_ARROW_PATH)
+      arrow.appendChild(arrowPath)
       this._roverArrows.appendChild(arrow)
 
-      this._roversData.set(rover, { path, arrow })
+      this._roversData.set(rover, {
+        path,
+        arrow,
+        previousOrientation: null,
+        arrowRotation: null
+      })
     }
 
-    const { path, arrow } = this._roversData.get(rover)
-    path.setAttribute('d', path.getAttribute('d') + ` L ${x} ${y}`)
+    const roverData = this._roversData.get(rover)
+    roverData.path.setAttribute('d', `${roverData.path.getAttribute('d')} L ${x} ${y}`)
 
-    let rotation
-    switch (rover.orientation) {
-      case orientations.north:
-        rotation = 180
-        break
-      case orientations.east:
-        rotation = 270
-        break
-      case orientations.south:
-        rotation = 0
-        break
-      case orientations.west:
-        rotation = 90
-        break
+    let rotation = roverData.arrowRotation
+
+    if (!roverData.previousOrientation) {
+      switch (rover.orientation) {
+        case orientations.north:
+          rotation = 180
+          break
+        case orientations.east:
+          rotation = 270
+          break
+        case orientations.south:
+          rotation = 0
+          break
+        case orientations.west:
+          rotation = 90
+          break
+      }
+    } else if (rover.orientation === roverData.previousOrientation.getLeft()) {
+      rotation -= 90
+    } else if (rover.orientation === roverData.previousOrientation.getRight()) {
+      rotation += 90
     }
 
-    arrow.setAttribute('transform', `translate(${x} ${y}) rotate(${rotation})`)
+    roverData.arrow.style.transform = `translate(${x}px, ${y}px)`
+    roverData.arrow.firstChild.style.transform = `rotate(${rotation}deg)`
+    roverData.arrowRotation = rotation
+    roverData.previousOrientation = rover.orientation
   }
 }
