@@ -2,14 +2,20 @@
   "name": "mars-rover",
   "version": "0.0.1",
   "description": "JavaScript implementation of the Google mars rover challenge",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jens1101/mars-rover"
+  },
   "scripts": {
-    "test": "standard && mocha"
+    "test": "standard && mocha",
+    "start": "serve -l 5050"
   },
   "author": "jens1101",
   "license": "MIT",
   "devDependencies": {
     "@types/mocha": "^7.0.2",
     "mocha": "^7.1.1",
+    "serve": "^11.3.0",
     "standard": "^14.3.3"
   },
   "type": "module",
