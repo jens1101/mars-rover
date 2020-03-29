@@ -7,17 +7,20 @@ export const MS_DELAY_BETWEEN_ROVER_MOVEMENTS = 400
  * @type {string}
  */
 const SVG_NAME_SPACE = 'http://www.w3.org/2000/svg'
+
 /**
  * How thick the grid lines should be
  * @type {number}
  */
 const GRID_LINE_THICKNESS = 0.05
+
 /**
  * The rover is represented by an equilateral triangle. This radius determines
  * how large it is
  * @type {number}
  */
 const ROVER_ARROW_RADIUS = 0.2
+
 /**
  * The path that will draw a rover arrow.
  * @type {string}

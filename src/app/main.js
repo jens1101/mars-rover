@@ -5,10 +5,12 @@ import {
 } from './SceneSvgRenderer.js'
 
 /**
- *
- * @param {HTMLFormElement} commandForm
- * @param {HTMLElement} errorAlert
- * @param {SVGElement} scene
+ * Initialises this application
+ * @param {HTMLFormElement} commandForm The form that contains the text area
+ * where the user enters commands.
+ * @param {HTMLElement} errorAlert An element where errors can be displayed.
+ * @param {SVGElement} scene The SVG element in which the scene will be
+ * rendered.
  */
 export function init (commandForm, errorAlert, scene) {
   // noinspection JSUnresolvedVariable
@@ -40,15 +42,20 @@ export function init (commandForm, errorAlert, scene) {
 }
 
 /**
- * @param {string} commands
- * @param {SceneSvgRenderer} renderer
- * @return {Promise<void>}
+ * Runs the specified commands. The plateau will be rendered and each rover
+ * movement will be executed with a delay between each movement.
+ * @param {string} commands The commands to execute
+ * @param {SceneSvgRenderer} renderer The renderer that will be used to render
+ * the scene.
+ * @return {Promise<void>} Resolves once all commands have been executed.
  */
 async function runCommands (commands, renderer) {
   const { plateau, allRoversMovements } = parseCommands(commands)
 
+  // Render the plateau
   renderer.drawPlateau(plateau)
 
+  // Render each movement of the rover(s)
   for (const roverMovements of allRoversMovements) {
     const asyncRoverMovements = iterateOverRoverMovements(roverMovements,
       MS_DELAY_BETWEEN_ROVER_MOVEMENTS)
@@ -59,6 +66,13 @@ async function runCommands (commands, renderer) {
   }
 }
 
+/**
+ * Iterates over the specified rover movements and adds a delay between each
+ * movement.
+ * @param {Generator<MarsRover>} roverMovements
+ * @param {number} delay The delay in milliseconds
+ * @return {AsyncGenerator<MarsRover>}
+ */
 async function * iterateOverRoverMovements (roverMovements, delay) {
   for (const rover of roverMovements) {
     yield new Promise(resolve => {

@@ -19,10 +19,6 @@
 
       init(commandForm, errorAlert, scene)
     </script>
-
-    <style>
-
-    </style>
 </head>
 <body>
 <div class="container d-flex flex-column vh-100">
@@ -30,13 +26,13 @@
     <section>
         <div class="alert alert-danger" hidden id="error-alert"></div>
 
-        <!-- TODO: maybe add the ability to control the speed via a slider -->
         <form id="command-form">
             <div class="form-group">
                 <label for="command-text-area">Commands</label>
                 <textarea class="form-control"
                           id="command-text-area"
-                          name="commands"></textarea>
+                          name="commands"
+                          rows="3"></textarea>
             </div>
             <button class="btn btn-primary" name="run" type="submit">
                 Run
